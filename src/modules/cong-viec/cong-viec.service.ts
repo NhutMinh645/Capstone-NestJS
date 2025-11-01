@@ -41,7 +41,7 @@ export class CongViecService {
     return this.prisma.congViec.findMany({ orderBy: { id: 'asc' } });
   }
 
-  // ✅ type dto gồm cả saoCongViec (để không lỗi TS)
+ 
   async create(dto: {
     tenCongViec: string;
     moTa?: string;
@@ -50,8 +50,8 @@ export class CongViecService {
     hinhAnh?: string;
     chiTietLoaiCongViecId: number;
     danhGia?: number;
-    saoCongViec?: number;   // <-- thêm field đúng tên schema
-    saoDanhGia?: number;    // <-- nếu client còn gửi tên cũ, sẽ map sang saoCongViec
+    saoCongViec?: number;   
+    saoDanhGia?: number;    
   }) {
     try {
       const chiTietId = Number(dto.chiTietLoaiCongViecId);
@@ -71,11 +71,11 @@ export class CongViecService {
           giaTien: Number(dto.giaTien),
           hinhAnh: dto.hinhAnh ?? null,
           danhGia: dto.danhGia ?? 0,
-          // map tên cũ -> tên đúng trong schema
+        
           saoCongViec: dto.saoCongViec ?? dto.saoDanhGia ?? 0,
           chiTietLoaiCongViecId: chiTietId,
-          // hoặc dùng connect:
-          // chiTietLoaiCongViec: { connect: { id: chiTietId } },
+         
+         
         },
       });
     } catch (e: any) {
@@ -126,8 +126,7 @@ export class CongViecService {
       const chiTietId = Number(dto.chiTietLoaiCongViecId);
       if (!chiTietId || Number.isNaN(chiTietId)) throw new BadRequestException('chiTietLoaiCongViecId không hợp lệ');
       data.chiTietLoaiCongViecId = chiTietId;
-      // hoặc:
-      // data.chiTietLoaiCongViec = { connect: { id: chiTietId } };
+      
     }
 
     return this.prisma.congViec.update({ where: { id }, data });
