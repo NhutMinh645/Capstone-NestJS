@@ -5,13 +5,13 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "ES2021",
+    "rootDir": "src",
     "sourceMap": true,
     "outDir": "dist",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "strict": false
   },
-  "include": [
-    "src/**/*.ts",
-    "prisma/**/*.ts"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test", "**/*.spec.ts " , "prisma/**/*.ts"]
 }
