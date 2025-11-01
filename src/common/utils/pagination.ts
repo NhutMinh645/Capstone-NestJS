@@ -1,0 +1,1 @@
+export function paginate<T>(items: T[], pageIndex=1, pageSize=10){ const start=(pageIndex-1)*pageSize; const end=start+pageSize; return { total: items.length, pageIndex, pageSize, items: items.slice(start,end) }; }

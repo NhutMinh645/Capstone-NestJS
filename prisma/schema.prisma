@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model NguoiDung {
+  id       Int     @id @default(autoincrement())
+  name     String
+  email    String  @unique
+  password String
+  phone    String?
+  avatar   String? @db.Text
+  role     Role    @default(USER)
+
+  binhLuans    BinhLuan[]
+  thueCongViec ThueCongViec[]
+
+  congViecs CongViec[] @relation("NguoiDung_CongViec")
+}
+
+model LoaiCongViec {
+  id                   Int                   @id @default(autoincrement())
+  tenLoaiCongViec      String?               @unique
+  chiTietLoaiCongViecs ChiTietLoaiCongViec[]
+}
+
+model ChiTietLoaiCongViec {
+  id             Int          @id @default(autoincrement())
+  tenChiTiet     String
+  loaiCongViecId Int
+  loaiCongViec   LoaiCongViec @relation(fields: [loaiCongViecId], references: [id])
+
+  hinhAnh String?
+
+  congViecs CongViec[]
+
+  @@index([loaiCongViecId])
+}
+
+model CongViec {
+  id                    Int     @id @default(autoincrement())
+  tenCongViec           String? @db.VarChar(255)
+  moTa                  String? @db.Text
+  moTaNgan              String? @db.Text
+  giaTien               Int?
+  hinhAnh               String? @db.Text
+  danhGia               Int?    @default(0)
+  saoCongViec           Int?    @default(0)
+  chiTietLoaiCongViecId Int?
+  nguoiTao              Int?
+
+  binhLuans           BinhLuan[]
+  chiTietLoaiCongViec ChiTietLoaiCongViec? @relation(fields: [chiTietLoaiCongViecId], references: [id])
+  thueCongViec        ThueCongViec[]
+  nguoiDung           NguoiDung?           @relation("NguoiDung_CongViec", fields: [nguoiTao], references: [id])
+
+  @@index([chiTietLoaiCongViecId], map: "CongViec_chiTietLoaiCongViecId_fkey")
+  @@index([nguoiTao])
+}
+
+model Skill {
+  id       Int     @id @default(autoincrement())
+  tenSkill String  @unique
+  moTa     String? @db.Text
+}
+
+model BinhLuan {
+  id           Int      @id @default(autoincrement())
+  noiDung      String
+  ngayBinhLuan DateTime @default(now())
+  nguoiDungId  Int
+  congViecId   Int
+  saoBinhLuan  Int      @db.TinyInt
+
+  NguoiDung NguoiDung @relation(fields: [nguoiDungId], references: [id], onDelete: Cascade)
+  CongViec  CongViec  @relation(fields: [congViecId], references: [id], onDelete: Cascade)
+
+  @@index([nguoiDungId])
+  @@index([congViecId])
+}
+
+
+model ThueCongViec {
+  id          Int        @id @default(autoincrement())
+  ngayThue    DateTime?
+  hoanThanh   Boolean?   @default(false)
+  congViecId  Int?
+  nguoiDungId Int?
+  congViec    CongViec?  @relation(fields: [congViecId], references: [id])
+  nguoiDung   NguoiDung? @relation(fields: [nguoiDungId], references: [id])
+
+  @@index([congViecId], map: "ThueCongViec_congViecId_fkey")
+  @@index([nguoiDungId], map: "ThueCongViec_nguoiDungId_fkey")
+}

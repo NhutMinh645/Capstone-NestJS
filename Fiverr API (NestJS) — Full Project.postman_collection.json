@@ -1,0 +1,1707 @@
+{
+	"info": {
+		"_postman_id": "06b4430f-515f-4e50-b187-026831bde27a",
+		"name": "Fiverr API (NestJS) — Full Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47786810",
+		"_collection_link": "https://gigi-247645-5869911.postman.co/workspace/Minh's-Workspace~bcb43d6c-a72a-47eb-8486-e058b1f160c9/collection/47786810-06b4430f-515f-4e50-b187-026831bde27a?action=share&source=collection_link&creator=47786810"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Auth - Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = {};",
+									"try { json = pm.response.json(); } catch (e) {}",
+									"const token = json?.content?.accessToken || json?.accessToken || json?.token;",
+									"if (token) {",
+									"  pm.collectionVariables.set(\"token\", token);",
+									"  pm.environment.set(\"token\", token);",
+									"}",
+									"pm.test(\"Has token\", function () { pm.expect(token, \"token missing in response\").to.be.ok; });"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin123645@example.com\",\n  \"password\": \"secret123\",\n  \"role\": \"ADMIN\",\n  \"phone\": \"0900000000\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/signup",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Auth - Signin (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = {};",
+									"try { json = pm.response.json(); } catch (e) {}",
+									"const token = json?.content?.accessToken || json?.accessToken || json?.token;",
+									"if (token) {",
+									"  pm.collectionVariables.set(\"token\", token);",
+									"  pm.environment.set(\"token\", token);",
+									"}",
+									"pm.test(\"Has token\", function () { pm.expect(token, \"token missing in response\").to.be.ok; });"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"secret123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/signin",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Auth - Me",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Users - List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users?pageIndex=1&pageSize=10&keyword=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "keyword",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Create (ADMIN)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Demo User\",\n  \"email\": \"user661@example.com\",\n  \"password\": \"secret123\",\n  \"role\": \"USER\",\n  \"phone\": \"0901111222\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Update (ADMIN)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Demo User Updated99\",\n  \"phone\": \"0902222333\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Delete (ADMIN)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Me (Profile)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/me/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Update Me (Profile)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Minh Nguyen\",\n  \"phone\": \"0900000000\",\n  \"avatar\": \"/uploads/avatars/me.jpg\"\n}\n"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/me/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Upload Avatar (Me)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "postman-cloud:///1f09b90f-4694-4160-a85b-7d16a511b1a2"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/users/upload-avatar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"upload-avatar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LoaiCongViec",
+			"item": [
+				{
+					"name": "LoaiCongViec - List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/loai-cong-viec?pageIndex=1&pageSize=10&keyword=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"loai-cong-viec"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "keyword",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoaiCongViec - Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/loai-cong-viec/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"loai-cong-viec",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoaiCongViec - Search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/loai-cong-viec/search?keyword=design&pageIndex=1&pageSize=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"loai-cong-viec",
+								"search"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "design"
+								},
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoaiCongViec - Create (ADMIN)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenLoaiCongViec\": \"Thiết kế 2\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/loai-cong-viec",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"loai-cong-viec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoaiCongViec - Update (ADMIN)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenLoaiCongViec\": \"Thiết kế đồ họa\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/loai-cong-viec/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"loai-cong-viec",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoaiCongViec - Delete (ADMIN)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/loai-cong-viec/4622?force=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"loai-cong-viec",
+								"4622"
+							],
+							"query": [
+								{
+									"key": "force",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ChiTietLoaiCongViec",
+			"item": [
+				{
+					"name": "ChiTietLoai - List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/chi-tiet-loai-cong-viec?pageIndex=1&pageSize=10&keyword=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chi-tiet-loai-cong-viec"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "keyword",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChiTietLoai - Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/chi-tiet-loai-cong-viec/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chi-tiet-loai-cong-viec",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChiTietLoai - Search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/chi-tiet-loai-cong-viec/search?keyword=logo&pageIndex=1&pageSize=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chi-tiet-loai-cong-viec",
+								"search"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "logo"
+								},
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChiTietLoai - Theo Loai",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/chi-tiet-loai-cong-viec/theo-loai/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chi-tiet-loai-cong-viec",
+								"theo-loai",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChiTietLoai - Create (ADMIN)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenChiTiet\": \"Logo & Branding 222\",\n  \"hinhAnh\": \"/uploads/logo.png\",\n  \"loaiCongViecId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/chi-tiet-loai-cong-viec",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chi-tiet-loai-cong-viec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChiTietLoai - Update (ADMIN)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenChiTiet\": \"Logo Pro\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/chi-tiet-loai-cong-viec/31",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chi-tiet-loai-cong-viec",
+								"31"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChiTietLoai - Delete (ADMIN)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/chi-tiet-loai-cong-viec/31",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chi-tiet-loai-cong-viec",
+								"31"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChiTietLoai - [MOCK] Them Nhom",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenNhom\": \"Design Group\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/chi-tiet-loai-cong-viec/them-nhom-chi-tiet-loai",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chi-tiet-loai-cong-viec",
+								"them-nhom-chi-tiet-loai"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChiTietLoai - [MOCK] Upload Hinh Nhom",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "formFile",
+									"value": "",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/chi-tiet-loai-cong-viec/upload-hinh-nhom-chi-tiet-loai/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chi-tiet-loai-cong-viec",
+								"upload-hinh-nhom-chi-tiet-loai",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChiTietLoai - [MOCK] Sua Nhom",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenNhom\": \"Updated Group\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/chi-tiet-loai-cong-viec/sua-nhom-chi-tiet-loai/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chi-tiet-loai-cong-viec",
+								"sua-nhom-chi-tiet-loai",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CongViec",
+			"item": [
+				{
+					"name": "CongViec - List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/cong-viec?pageIndex=1&pageSize=10&keyword=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cong-viec"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "keyword",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CongViec - Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/cong-viec/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cong-viec",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CongViec - Lay Menu Loai",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/cong-viec/lay-menu-loai-cong-viec",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cong-viec",
+								"lay-menu-loai-cong-viec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CongViec - Lay Chi Tiet Theo Loai",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/cong-viec/lay-chi-tiet-loai-cong-viec/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cong-viec",
+								"lay-chi-tiet-loai-cong-viec",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CongViec - Lay Theo Ten",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/cong-viec/lay-danh-sach-cong-viec-theo-ten/design",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cong-viec",
+								"lay-danh-sach-cong-viec-theo-ten",
+								"design"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CongViec - Lay Cong Viec Theo Chi Tiet",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/cong-viec/lay-cong-viec-theo-chi-tiet-loai/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cong-viec",
+								"lay-cong-viec-theo-chi-tiet-loai",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CongViec - Lay Cong Viec Chi Tiet",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/cong-viec/lay-cong-viec-chi-tiet/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cong-viec",
+								"lay-cong-viec-chi-tiet",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "BinhLuan",
+			"item": [
+				{
+					"name": "BinhLuan - List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/binh-luan?pageIndex=1&pageSize=10&keyword=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"binh-luan"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "keyword",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BinhLuan - By Job",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/binh-luan/theo-cong-viec/1?pageIndex=1&pageSize=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"binh-luan",
+								"theo-cong-viec",
+								"1"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BinhLuan - Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/binh-luan/4171",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"binh-luan",
+								"4171"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BinhLuan - Create (USER)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"noiDung\": \"Bài viết hay!\",\n  \"nguoiDungId\": 3,\n  \"congViecId\": 1,\n  \"saoBinhLuan\": 5\n}\n"
+						},
+						"url": {
+							"raw": "{{base_url}}/binh-luan",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"binh-luan"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BinhLuan - Update (Owner/Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"noiDung\": \"Cập nhật bình luận\",\n  \"saoBinhLuan\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/binh-luan/7160",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"binh-luan",
+								"7160"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BinhLuan - Delete (Owner/Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/binh-luan/7160",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"binh-luan",
+								"7160"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Skill",
+			"item": [
+				{
+					"name": "Skill - List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/skill",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"skill"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Skill - Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/skill/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"skill",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Skill - Search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/skill/search?keyword=photo&pageIndex=1&pageSize=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"skill",
+								"search"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "photo"
+								},
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Skill - Create (ADMIN)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenSkill\": \"Photoshop\",\n  \"moTa\": \"Thiết kế cơ bản\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/skill",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"skill"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Skill - Update (ADMIN)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tenSkill\": \"Photoshop nâng cao\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/skill/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"skill",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Skill - Delete (ADMIN)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/skill/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"skill",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ThueCongViec",
+			"item": [
+				{
+					"name": "Thue - List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/thue-cong-viec?pageIndex=1&pageSize=10&hoanThanh=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"thue-cong-viec"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "hoanThanh",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Thue - Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/thue-cong-viec/10447",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"thue-cong-viec",
+								"10447"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Thue - Create (USER)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"congViecId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/thue-cong-viec",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"thue-cong-viec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Thue - My Orders (USER)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/thue-cong-viec/me/orders?pageIndex=1&pageSize=10&hoanThanh=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"thue-cong-viec",
+								"me",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "pageIndex",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "hoanThanh",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Thue - Complete (Owner/Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/thue-cong-viec/14409/complete",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"thue-cong-viec",
+								"14409",
+								"complete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Thue - Update (ADMIN)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"hoanThanh\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/thue-cong-viec/14409",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"thue-cong-viec",
+								"14409"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Thue - Delete (ADMIN)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/thue-cong-viec/14409",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"thue-cong-viec",
+								"14409"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3069/api"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}
