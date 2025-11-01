@@ -5,66 +5,77 @@ import { PrismaService } from '../../prisma.service';
 export class CongViecService {
   constructor(private prisma: PrismaService) {}
 
- 
-async getMenuLoaiCongViec() {
-  return this.prisma.loaiCongViec.findMany({
-    include: { chiTietLoaiCongViecs: true }, 
-    orderBy: { id: 'asc' },
-  });
-}
-async getCongViecTheoChiTiet(chiTietId: number) {
-  return this.prisma.congViec.findMany({
-    where: { chiTietLoaiCongViecId: chiTietId },
-    include: {
-      
-      chiTietLoaiCongViec: true, 
-    },
-    orderBy: { id: 'asc' },
-  });
-}
-async getCongViecChiTiet(id: number) {
+  async getMenuLoaiCongViec() {
+    return this.prisma.loaiCongViec.findMany({
+      include: { chiTietLoaiCongViecs: true },
+      orderBy: { id: 'asc' },
+    });
+  }
+
+  async getCongViecTheoChiTiet(chiTietId: number) {
+    return this.prisma.congViec.findMany({
+      where: { chiTietLoaiCongViecId: chiTietId },
+      include: { chiTietLoaiCongViec: true },
+      orderBy: { id: 'asc' },
+    });
+  }
+
+  async getCongViecChiTiet(id: number) {
     const row = await this.prisma.congViec.findUnique({
       where: { id },
-      include: {
-        chiTietLoaiCongViec: true, 
-      },
+      include: { chiTietLoaiCongViec: true },
     });
     if (!row) throw new NotFoundException('Công việc không tồn tại');
     return row;
   }
- async getCongViecTheoTen(ten: string) {
-  return this.prisma.congViec.findMany({
-    where: { tenCongViec: { contains: ten } }, 
-    include: { chiTietLoaiCongViec: true },    
-    orderBy: { id: 'asc' },
-  });
-}
 
-
+  async getCongViecTheoTen(ten: string) {
+    return this.prisma.congViec.findMany({
+      where: { tenCongViec: { contains: ten } },
+      include: { chiTietLoaiCongViec: true },
+      orderBy: { id: 'asc' },
+    });
+  }
 
   list() {
     return this.prisma.congViec.findMany({ orderBy: { id: 'asc' } });
   }
 
-  async create(dto: { tenCongViec: string; moTa?: string; giaTien: number; chiTietLoaiCongViecId: number; saoDanhGia?: number }) {
+  // ✅ type dto gồm cả saoCongViec (để không lỗi TS)
+  async create(dto: {
+    tenCongViec: string;
+    moTa?: string;
+    moTaNgan?: string;
+    giaTien: number;
+    hinhAnh?: string;
+    chiTietLoaiCongViecId: number;
+    danhGia?: number;
+    saoCongViec?: number;   // <-- thêm field đúng tên schema
+    saoDanhGia?: number;    // <-- nếu client còn gửi tên cũ, sẽ map sang saoCongViec
+  }) {
     try {
       const chiTietId = Number(dto.chiTietLoaiCongViecId);
-      if (!chiTietId || Number.isNaN(chiTietId)) throw new BadRequestException('chiTietLoaiCongViecId không hợp lệ');
+      if (!chiTietId || Number.isNaN(chiTietId)) {
+        throw new BadRequestException('chiTietLoaiCongViecId không hợp lệ');
+      }
 
       const exists = await this.prisma.chiTietLoaiCongViec.findUnique({ where: { id: chiTietId } });
       if (!exists) throw new BadRequestException('ChiTietLoaiCongViec không tồn tại');
 
-      // Nếu id KHÔNG autoincrement, tự tính id
-      const nextId = (await this.prisma.congViec.count()) + 1;
-
+      // ✅ KHÔNG tự set id (đã autoincrement)
       return await this.prisma.congViec.create({
         data: {
-          id: nextId, // nếu model có autoincrement thì bỏ dòng này
           tenCongViec: dto.tenCongViec.trim(),
-          moTa: dto.moTa?.toString().slice(0, 20000) || null, // tránh P2000
+          moTa: dto.moTa?.toString().slice(0, 20000) || null,
+          moTaNgan: dto.moTaNgan ?? null,
           giaTien: Number(dto.giaTien),
-          saoDanhGia: Number(dto.saoDanhGia ?? 0),
+          hinhAnh: dto.hinhAnh ?? null,
+          danhGia: dto.danhGia ?? 0,
+          // map tên cũ -> tên đúng trong schema
+          saoCongViec: dto.saoCongViec ?? dto.saoDanhGia ?? 0,
           chiTietLoaiCongViecId: chiTietId,
+          // hoặc dùng connect:
+          // chiTietLoaiCongViec: { connect: { id: chiTietId } },
         },
       });
     } catch (e: any) {
@@ -99,8 +110,27 @@ async getCongViecChiTiet(id: number) {
     return row;
   }
 
-  update(id: number, dto: any) {
-    return this.prisma.congViec.update({ where: { id }, data: dto });
+  // ✅ Whitelist field hợp lệ cho Prisma
+  async update(id: number, dto: any) {
+    const data: any = {};
+    if (dto.tenCongViec !== undefined) data.tenCongViec = String(dto.tenCongViec);
+    if (dto.moTa !== undefined)       data.moTa = dto.moTa?.toString().slice(0, 20000) || null;
+    if (dto.moTaNgan !== undefined)   data.moTaNgan = dto.moTaNgan ?? null;
+    if (dto.giaTien !== undefined)    data.giaTien = Number(dto.giaTien);
+    if (dto.hinhAnh !== undefined)    data.hinhAnh = dto.hinhAnh ?? null;
+    if (dto.danhGia !== undefined)    data.danhGia = Number(dto.danhGia ?? 0);
+    if (dto.saoCongViec !== undefined || dto.saoDanhGia !== undefined) {
+      data.saoCongViec = Number(dto.saoCongViec ?? dto.saoDanhGia ?? 0);
+    }
+    if (dto.chiTietLoaiCongViecId !== undefined) {
+      const chiTietId = Number(dto.chiTietLoaiCongViecId);
+      if (!chiTietId || Number.isNaN(chiTietId)) throw new BadRequestException('chiTietLoaiCongViecId không hợp lệ');
+      data.chiTietLoaiCongViecId = chiTietId;
+      // hoặc:
+      // data.chiTietLoaiCongViec = { connect: { id: chiTietId } };
+    }
+
+    return this.prisma.congViec.update({ where: { id }, data });
   }
 
   remove(id: number) {
