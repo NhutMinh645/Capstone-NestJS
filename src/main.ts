@@ -50,7 +50,7 @@ async function bootstrap() {
   });
   setupSwagger(app);
   const port = Number(process.env.PORT || 3069);
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   console.log("Swagger:", `http://localhost:${port}/swagger`);
 }
 bootstrap();
